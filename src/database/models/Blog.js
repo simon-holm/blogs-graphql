@@ -17,4 +17,4 @@ blogSchema.statics.nbrOfLikes = function(id) {
   return blogPost.findById(id).then(blog => blog.likes.length)
 }
 
-mongoose.model('Blog', blogSchema)
+module.exports = mongoose.model('Blog', blogSchema)

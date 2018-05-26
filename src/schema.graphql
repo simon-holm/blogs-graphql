@@ -1,0 +1,39 @@
+type AuthPayload {
+  token: String!
+  user: User
+}
+
+type User {
+  _id: ID!
+  displayName: String!
+  firstname: String
+  surname: String
+  email: String
+  password: String
+}
+
+type Like {
+  _id: ID!
+  _user: User!
+  _blogPost: Blog!
+}
+
+type Blog {
+  title: String
+  content: String
+  imageUrl: String
+  createdAt: Int
+  likes: [Like!]!
+  _user: User!
+}
+
+type Query {
+  allBlogs: [Blog!]!
+  oneBlog(id: ID!): Blog!
+}
+
+type Mutation {
+  signup(email: String! password: String! displayName: String! firstname: String surname: String): AuthPayload!
+  login(email: String! password: String!): AuthPayload!
+  createBlog(title: String! content: String! imageUrl: String!): Blog!
+}

@@ -6,4 +6,4 @@ const likeSchema = new Schema({
   _blogPost: { type: Schema.Types.ObjectId, ref: 'Blog' }
 })
 
-mongoose.model('Like', likeSchema)
+module.exports = mongoose.model('Like', likeSchema)
