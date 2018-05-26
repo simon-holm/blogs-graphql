@@ -1,17 +1,31 @@
 const Blog = require('../../database/models/Blog')
+const User = require('../../database/models/User')
+const { authenticate } = require('../../utils')
 
-const createBlog = async () => {
+const createBlog = async (
+  parent,
+  { title, content, imageUrl },
+  context,
+  info
+) => {
   // auth needed here
-
-  // todo: Auth
+  console.log('in createBlog - context', context)
+  console.log(authenticate)
+  const userId = authenticate(context)
 
   //create blogpost
-  const blogPost = new Blog({
+  const blogPost = await new Blog({
     title,
     content,
     imageUrl,
-    createdAt: new Date.now()
-  })
+    createdAt: Date.now(),
+    _user: userId // ? id matching user._id is it enough?
+  }).save()
 
-  // Return something
+  // Return blogpost
+  return blogPost
+}
+
+module.exports = {
+  createBlog
 }

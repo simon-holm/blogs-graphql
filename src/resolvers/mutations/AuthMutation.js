@@ -20,7 +20,8 @@ const signup = async (
       throw new Error({
         message: 'Name or Email already exists',
         email: user.email,
-        displayName: user.displayName
+        displayName: user.displayName,
+        user
       })
     }
 
@@ -53,9 +54,9 @@ const signup = async (
 const login = async (parent, args, context, info) => {
   try {
     const user = await User.findOne(
-      { email: args.email },
-      { password: 1 }
-    ).lean()
+      { email: args.email }
+    ).select('+password').lean()
+    console.log(user)
 
     if (!user) throw new Error('User not found')
 
