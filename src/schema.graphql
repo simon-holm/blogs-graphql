@@ -29,13 +29,21 @@ type Blog {
 }
 
 type Query {
-  feed(skip: Int limit: Int searchTerm: String): [Blog!]!
+  feed(skip: Int, limit: Int, searchTerm: String): [Blog!]!
   oneBlog(id: ID!): Blog!
 }
 
 type Mutation {
-  signup(email: String! password: String! displayName: String! firstname: String surname: String): AuthPayload!
-  login(email: String! password: String!): AuthPayload!
-  createBlog(title: String! content: String! imageUrl: String!): Blog!
-  likeBlog(blogId: ID!): Like!
+  signup(
+    email: String!
+    password: String!
+    displayName: String!
+    firstname: String
+    surname: String
+  ): AuthPayload!
+  login(email: String!, password: String!): AuthPayload!
+  createBlog(title: String!, content: String!, imageUrl: String!): Blog!
+  likeBlog(id: ID!): Like!
+  updateBlog(id: ID!, title: String, content: String, imageUrl: String): Blog!
+  removeBlog(blogId: ID!): Blog!
 }
