@@ -6,7 +6,6 @@ const blogSchema = new Schema({
   content: String,
   imageUrl: String,
   createdAt: { type: Date, default: Date.now },
-  likes: [{ type: Schema.Types.ObjectId, ref: 'Like' }],
   _user: { type: Schema.Types.ObjectId, ref: 'User' }
 })
 

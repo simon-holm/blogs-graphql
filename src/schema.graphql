@@ -19,6 +19,7 @@ type Like {
 }
 
 type Blog {
+  _id: ID!
   title: String
   content: String
   imageUrl: String
@@ -28,7 +29,7 @@ type Blog {
 }
 
 type Query {
-  allBlogs: [Blog!]!
+  feed(skip: Int limit: Int searchTerm: String): [Blog!]!
   oneBlog(id: ID!): Blog!
 }
 
@@ -36,4 +37,5 @@ type Mutation {
   signup(email: String! password: String! displayName: String! firstname: String surname: String): AuthPayload!
   login(email: String! password: String!): AuthPayload!
   createBlog(title: String! content: String! imageUrl: String!): Blog!
+  likeBlog(blogId: ID!): Like!
 }
