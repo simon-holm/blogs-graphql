@@ -29,10 +29,36 @@ const injectNormalizeCSS = () => injectGlobal`
     color: ${Color.textDark};
     padding: 0;
     font-family: sans-serif;
+    
+  }
+  input {
+    border: 0;
+    height: 40px;
+    font-size: 2rem;
+    text-align: center;
+    transition: ease-out 0.2s;
+    border-bottom: 1px solid $light-grey;
+    
+    &:focus {
+      outline: none;
+    }
+    
+    &:active {
+      color:red;
+    }
+    
   }
   input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 50px #efefef inset;
-}
+  }
+  textarea {
+    text-align: center;
+    font-size: 2rem;
+
+    &:focus {
+      text-align: left;
+    }
+  }
 `
 
 // Apollo Client

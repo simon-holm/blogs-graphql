@@ -4,6 +4,8 @@ import gql from 'graphql-tag'
 
 import styled from 'styled-components'
 
+import { Button } from './reusable'
+
 import { AUTH_TOKEN } from '../constants'
 
 class Login extends Component {
@@ -14,8 +16,8 @@ class Login extends Component {
     name: ''
   }
 
-  _confirm = async () => {
-    console.log('CONFIRMING')
+  _confirm = async e => {
+    e.preventDefault()
     const { name, email, password } = this.state
     if (this.state.login) {
       const result = await this.props.loginMutation({
@@ -48,38 +50,41 @@ class Login extends Component {
     return (
       <Container>
         <h2>{this.state.login ? '🍑 Login' : '📝 SignUp'}</h2>
-        <form onSubmit={() => this._confirm()}>
+        <form onSubmit={e => this._confirm(e)}>
           {!this.state.login && (
             <input
               value={this.state.name}
               onChange={e => this.setState({ name: e.target.value })}
               type="text"
-              placeholder="Your name"
+              placeholder="Your Nickname"
+              autocomplete="off"
             />
           )}
           <input
             value={this.state.email}
             onChange={e => this.setState({ email: e.target.value })}
             type="text"
-            placeholder="Your email address"
+            placeholder="📧"
+            autocomplete="off"
           />
           <input
             value={this.state.password}
             onChange={e => this.setState({ password: e.target.value })}
             type="password"
-            placeholder="Choose a safe password"
+            placeholder="🔏"
+            autocomplete="off"
           />
+          <ButtonGroup>
+            <Button type="submit">
+              {this.state.login ? 'Login' : 'Create Account'}
+            </Button>
+            <Button onClick={() => this.setState({ login: !this.state.login })}>
+              {this.state.login
+                ? 'Need to create an account?'
+                : 'Already have an account?'}
+            </Button>
+          </ButtonGroup>
         </form>
-        <Container>
-          <button onClick={() => this._confirm()}>
-            {this.state.login ? 'login' : 'create account'}
-          </button>
-          <button onClick={() => this.setState({ login: !this.state.login })}>
-            {this.state.login
-              ? 'need to create an account?'
-              : 'already have an account?'}
-          </button>
-        </Container>
       </Container>
     )
   }
@@ -93,11 +98,23 @@ const Container = styled.div`
     font-size: 5rem;
   }
   form {
+    display: flex;
+    flex-direction: column;
+
     margin-bottom: 15px;
   }
   input {
     font-size: 4rem;
     padding: 1rem;
+    margin-bottom: 1rem;
+  }
+`
+const ButtonGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    width: 49%;
   }
 `
 

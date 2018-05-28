@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import styled from 'styled-components'
 
 import Post from './Post'
 
-const FEED_QUERY = gql`
+export const FEED_QUERY = gql`
   {
     feed {
       _id

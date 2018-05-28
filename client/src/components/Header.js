@@ -13,7 +13,7 @@ const Header = props => {
       <MenuOptions>
         <Link to="/">📰</Link>
         <Link to="/">👁‍🗨</Link>
-        {authToken && <Link to="/">⚗️</Link>}
+        {authToken && <Link to="/create">⚗️</Link>}
       </MenuOptions>
       <MenuOptions>
         {authToken ? (
@@ -34,11 +34,15 @@ const Header = props => {
 }
 
 const NavBar = styled.nav`
+  position: fixed;
+
+  box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   height: 100px;
+  width: 100%;
   padding: 0 25px;
 `
 const Title = styled.h1`

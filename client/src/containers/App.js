@@ -7,6 +7,7 @@ import { Color } from '../styles/variables'
 import Header from '../components/Header'
 import Feed from '../components/Feed'
 import Login from '../components/Login'
+import CreatePost from '../components/CreatePost'
 
 class App extends Component {
   render() {
@@ -17,6 +18,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Feed} />
             <Route exact path="/login" component={Login} />
+            <Route exact path="/create" component={CreatePost} />
           </Switch>
         </AppContainer>
       </Wrapper>
@@ -49,6 +51,8 @@ const AppContainer = styled.div`
   align-items: center;
 
   flex-direction: column;
+
+  padding-top: 12.5rem;
 `
 
 export default App
