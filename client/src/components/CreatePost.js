@@ -4,6 +4,9 @@ import { Mutation } from 'react-apollo'
 import styled from 'styled-components'
 
 import { EmojiButton } from './reusable'
+import { FEED_QUERY } from './Feed'
+
+import withPagination from '../HOC/withPagination'
 
 const CREATE_POST = gql`
   mutation createBlog($title: String!, $content: String!, $imageUrl: String!) {
@@ -35,10 +38,48 @@ class CreatePost extends Component {
     this.props.history.push('/')
   }
 
+  // TODO - Add Update and optimisticUI to mutation
   render() {
+    const { feedVariables } = this.props
     return (
       <div>
-        <Mutation mutation={CREATE_POST}>
+        <Mutation
+          mutation={CREATE_POST}
+          update={(cache, { data: { createBlog } }) => {
+            const { feed } = cache.readQuery({
+              query: FEED_QUERY,
+              variables: {
+                skip: feedVariables.skip,
+                limit: feedVariables.limit,
+                searchTerm: feedVariables.searchTerm
+              }
+            })
+
+            feed.unshift({
+              ...createBlog,
+              likes: [],
+              _user: {
+                __typename: 'Mutation',
+                displayName: '',
+                firstname: '',
+                surname: ''
+              }
+            })
+
+            cache.writeQuery({
+              query: FEED_QUERY,
+              data: { feed }
+            })
+          }}
+          optimisticResponse={{
+            createBlog: {
+              __typename: 'Mutation',
+              title: this.state.title,
+              content: this.state.content,
+              imageUrl: this.state.imageUrl
+            }
+          }}
+        >
           {(createBlog, { data, loading, error }) => (
             <Form onSubmit={e => this.handleSubmit(e, createBlog)}>
               <input
@@ -83,4 +124,4 @@ const Form = styled.form`
   }
 `
 
-export default CreatePost
+export default withPagination(CreatePost)

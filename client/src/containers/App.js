@@ -9,17 +9,21 @@ import Feed from '../components/Feed'
 import Login from '../components/Login'
 import CreatePost from '../components/CreatePost'
 
+import FeedProvider from '../context/Pagination'
+
 class App extends Component {
   render() {
     return (
       <Wrapper>
         <Header />
         <AppContainer>
-          <Switch>
-            <Route exact path="/" component={Feed} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/create" component={CreatePost} />
-          </Switch>
+          <FeedProvider>
+            <Switch>
+              <Route exact path="/" component={Feed} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/create" component={CreatePost} />
+            </Switch>
+          </FeedProvider>
         </AppContainer>
       </Wrapper>
     )

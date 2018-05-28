@@ -1,6 +1,9 @@
 const Blog = require('../../database/models/Blog')
 const User = require('../../database/models/User')
 const Like = require('../../database/models/Like')
+
+const { pubSub } = require('../index')
+
 const { authenticate } = require('../../utils')
 
 const createBlog = async (
@@ -37,6 +40,9 @@ const likeBlog = async (parent, args, context, info) => {
     _user: userId,
     _blogPost: args.id
   }).save()
+
+  // notify for subscription
+  context.pubsub.publish('newLike', { newLike: like })
 
   return like
 }

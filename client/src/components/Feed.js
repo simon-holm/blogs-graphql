@@ -3,11 +3,15 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 
+import { EmojiButton } from './reusable'
+
 import Post from './Post'
 
+import withPagination from '../HOC/withPagination'
+
 export const FEED_QUERY = gql`
-  {
-    feed {
+  query feed($skip: Int, $limit: Int, $searchTerm: String) {
+    feed(skip: $skip, limit: $limit, searchTerm: $searchTerm) {
       _id
       title
       content
@@ -24,15 +28,54 @@ export const FEED_QUERY = gql`
   }
 `
 
-const Feed = () => (
-  <Query query={FEED_QUERY}>
-    {({ loading, error, data }) => {
-      if (loading) return 'Loading...'
-      if (error) return `Error! ${error.message}`
+class Feed extends Component {
+  render() {
+    const {
+      feedVariables: { skip, limit, searchTerm },
+      paginateBack,
+      paginateForward
+    } = this.props
 
-      return data.feed.map(post => <Post key={post._id} {...post} />)
-    }}
-  </Query>
-)
+    console.log('feed rendered')
+    return (
+      <React.Fragment>
+        <Query query={FEED_QUERY} variables={{ skip, limit, searchTerm }}>
+          {({ loading, error, data, refetch }) => {
+            if (loading) return 'Loading...'
+            if (error) return `Error! ${error.message}`
 
-export default Feed
+            return (
+              <React.Fragment>
+                {data.feed.map(post => <Post key={post._id} {...post} />)}
+                <Pagination>
+                  {!!skip && (
+                    <EmojiButton onClick={() => paginateBack()}>👈</EmojiButton>
+                  )}
+
+                  {data.feed.length === 5 && (
+                    <EmojiButton
+                      style={{ marginLeft: 'auto' }}
+                      onClick={() => paginateForward()}
+                    >
+                      👉
+                    </EmojiButton>
+                  )}
+                </Pagination>
+              </React.Fragment>
+            )
+          }}
+        </Query>
+      </React.Fragment>
+    )
+  }
+}
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  width: 50vw;
+  margin: 10rem 0;
+`
+
+export default withPagination(Feed)

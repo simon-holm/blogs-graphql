@@ -47,3 +47,7 @@ type Mutation {
   updateBlog(id: ID!, title: String, content: String, imageUrl: String): Blog!
   removeBlog(blogId: ID!): Blog!
 }
+
+type Subscription {
+  newLike: Like
+}

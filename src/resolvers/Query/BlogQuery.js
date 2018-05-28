@@ -1,7 +1,6 @@
 const Blog = require('../../database/models/Blog')
 
 const feed = async (parent, args, context, info) => {
- 
   const skip = args.skip || 0
   const limit = args.limit || 5
   const where = args.searchTerm
@@ -14,6 +13,7 @@ const feed = async (parent, args, context, info) => {
     : {}
 
   const blogs = await Blog.find()
+    .sort('-createdAt')
     .where(where)
     .skip(skip)
     .limit(limit)
@@ -23,7 +23,6 @@ const feed = async (parent, args, context, info) => {
 }
 
 const oneBlog = async (parent, args, context, info) => {
-
   const blog = await Blog.findOne({ id: args.id }).lean()
 
   return blog

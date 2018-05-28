@@ -57,7 +57,7 @@ class Login extends Component {
               onChange={e => this.setState({ name: e.target.value })}
               type="text"
               placeholder="Your Nickname"
-              autocomplete="off"
+              autoComplete="off"
             />
           )}
           <input
@@ -65,14 +65,14 @@ class Login extends Component {
             onChange={e => this.setState({ email: e.target.value })}
             type="text"
             placeholder="📧"
-            autocomplete="off"
+            autoComplete="off"
           />
           <input
             value={this.state.password}
             onChange={e => this.setState({ password: e.target.value })}
             type="password"
             placeholder="🔏"
-            autocomplete="off"
+            autoComplete="off"
           />
           <ButtonGroup>
             <Button type="submit">

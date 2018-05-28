@@ -7,6 +7,8 @@ import { EmojiButton } from './reusable'
 
 import { FEED_QUERY } from './Feed'
 
+import withPagination from '../HOC/withPagination'
+
 const LIKE_BLOG = gql`
   mutation likeBlog($id: ID!) {
     likeBlog(id: $id) {
@@ -15,44 +17,64 @@ const LIKE_BLOG = gql`
   }
 `
 
-const Post = ({ _id, title, content, imageUrl, likes }) => {
-  return (
-    <PostBody>
-      <h2>{title}</h2>
-      <img src={imageUrl} />
-      <FlexRow>
-        <Mutation
-          mutation={LIKE_BLOG}
-          update={(cache, { data: { likeBlog } }) => {
-            const { feed } = cache.readQuery({ query: FEED_QUERY })
+class Post extends React.Component {
+  render() {
+    const { _id, title, imageUrl, content, likes, feedVariables } = this.props
+    return (
+      <PostBody>
+        <h2>{title}</h2>
+        <img src={imageUrl} />
+        <FlexRow>
+          <Mutation
+            mutation={LIKE_BLOG}
+            update={(cache, { data: { likeBlog } }) => {
+              const { feed } = cache.readQuery({
+                query: FEED_QUERY,
+                variables: {
+                  skip: feedVariables.skip,
+                  limit: feedVariables.limit,
+                  searchTerm: feedVariables.searchTerm
+                }
+              })
 
-            let currentPost = feed.filter(post => post._id === _id)[0]
-            currentPost.likes.push({ ...likeBlog })
+              let currentPost = feed.filter(post => post._id === _id)[0]
+              currentPost.likes.push({ ...likeBlog })
 
-            cache.writeQuery({
-              query: FEED_QUERY,
-              data: { feed }
-            })
-          }}
-          optimisticResponse={{
-            likeBlog: {
-              __typename: 'Mutation',
-              _id
-            }
-          }}
-        >
-          {(likeBlog, { data, error, loading }) => (
-            <EmojiButton onClick={() => likeBlog({ variables: { id: _id } })}>
-              👍
-            </EmojiButton>
+              cache.writeQuery({
+                query: FEED_QUERY,
+                data: { feed }
+              })
+            }}
+            optimisticResponse={{
+              likeBlog: {
+                __typename: 'Mutation',
+                _id
+              }
+            }}
+          >
+            {(likeBlog, { data, error, loading }) => (
+              <EmojiButton onClick={() => likeBlog({ variables: { id: _id } })}>
+                👍
+              </EmojiButton>
+            )}
+          </Mutation>
+
+          {likes.length <= 10 ? (
+            likes.map(like => <Like key={like._id}>❤️</Like>)
+          ) : (
+            <React.Fragment>
+              <Like>❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</Like>
+              <LikeNumber>
+                <span>❌</span>
+                {likes.length - 10}
+              </LikeNumber>
+            </React.Fragment>
           )}
-        </Mutation>
-
-        {likes.map(like => <Like key={like._id}>❤️</Like>)}
-      </FlexRow>
-      <pre>{content}</pre>
-    </PostBody>
-  )
+        </FlexRow>
+        <pre>{content}</pre>
+      </PostBody>
+    )
+  }
 }
 
 const PostBody = styled.article`
@@ -65,7 +87,7 @@ const PostBody = styled.article`
   text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 
   &:last-of-type {
-    margin-bottom: 50rem;
+    margin-bottom: 10rem;
   }
 
   h2 {
@@ -84,9 +106,21 @@ const PostBody = styled.article`
 const FlexRow = styled.div`
   display: flex;
   width: 100%;
+  max-width: 60rem;
+  height: 7.5rem;
 `
+
 const Like = styled.p`
   font-size: 3rem;
 `
-
-export default Post
+const LikeNumber = styled.div`
+  padding-top: 12px;
+  font-size: 3rem;
+  font-family: serif;
+  color: white;
+  text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0px 0px 5px black;
+  span {
+    font-size: 2rem;
+  }
+`
+export default withPagination(Post)
