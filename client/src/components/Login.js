@@ -31,7 +31,7 @@ class Login extends Component {
     } else {
       const result = await this.props.signupMutation({
         variables: {
-          name,
+          displayName: name,
           email,
           password
         }
