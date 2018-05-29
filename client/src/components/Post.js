@@ -18,9 +18,6 @@ const LIKE_BLOG = gql`
 `
 
 class Post extends React.Component {
-  componentDidMount() {
-    this.props.subscribeToNewLikes()
-  }
   render() {
     const { _id, title, imageUrl, content, likes, feedVariables } = this.props
     return (
@@ -30,30 +27,33 @@ class Post extends React.Component {
         <FlexRow>
           <Mutation
             mutation={LIKE_BLOG}
-            // update={(cache, { data: { likeBlog } }) => {
-            //   const { feed } = cache.readQuery({
-            //     query: FEED_QUERY,
-            //     variables: {
-            //       skip: feedVariables.skip,
-            //       limit: feedVariables.limit,
-            //       searchTerm: feedVariables.searchTerm
-            //     }
-            //   })
+            update={(cache, { data: { likeBlog } }) => {
+              const { feed } = cache.readQuery({
+                query: FEED_QUERY,
+                variables: {
+                  skip: feedVariables.skip,
+                  limit: feedVariables.limit,
+                  searchTerm: feedVariables.searchTerm
+                }
+              })
 
-            //   let currentPost = feed.filter(post => post._id === _id)[0]
-            //   currentPost.likes.push({ ...likeBlog })
+              // -
+              console.log('update in Post mutation', { likeBlog })
+              // wtf
+              let currentPost = feed.filter(post => post._id === likeBlog._id)[0] //._id
+              currentPost.likes.push({ ...likeBlog })
 
-            //   cache.writeQuery({
-            //     query: FEED_QUERY,
-            //     data: { feed }
-            //   })
-            // }}
-            // optimisticResponse={{
-            //   likeBlog: {
-            //     __typename: 'Mutation',
-            //     _id
-            //   }
-            // }}
+              cache.writeQuery({
+                query: FEED_QUERY,
+                data: { feed }
+              })
+            }}
+            optimisticResponse={{
+              likeBlog: {
+                __typename: 'Mutation',
+                _id
+              }
+            }}
           >
             {(likeBlog, { data, error, loading }) => (
               <EmojiButton onClick={() => likeBlog({ variables: { id: _id } })}>

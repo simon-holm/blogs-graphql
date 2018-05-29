@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import { EmojiButton } from './reusable'
 
+import FeedList from './FeedList'
 import Post from './Post'
 
 import withPagination from '../HOC/withPagination'
@@ -58,54 +59,37 @@ class Feed extends Component {
             if (error) return `Error! ${error.message}`
 
             return (
-              // Designa om.. så en komponent ansvarar för att mappa upp...
-              // då bara 1 subscribeToMore listener
               <React.Fragment>
-                {data.feed.map(post => (
-                  <Post
-                    key={post._id}
-                    {...post}
-                    subscribeToNewLikes={() =>
-                      subscribeToMore({
-                        document: LIKES_SUBSCRIPTION,
-                        updateQuery: (prev, { subscriptionData }) => {
-                          console.log(prev.feed[0].likes.length)
-                          console.log('that was prev')
-                          if (!subscriptionData.data) return prev
+                <FeedList
+                  feed={data.feed}
+                  subscribeToNewLikes={() =>
+                    subscribeToMore({
+                      document: LIKES_SUBSCRIPTION,
+                      updateQuery: (prev, { subscriptionData }) => {
 
-                          const newLike = subscriptionData.data.newLike
-                          console.log({ newLike })
-                          let newFeed = { ...prev }
-                          // newFeed.feed.map(post => {
-                          //   if (post._id === newLike._blogPost._id) {
-                          //     console.log('RÄTT FUCKER')
-                          //     console.log(post.likes.length)
-                          //     // post.likes = post.likes.concat([{ ...newLike }])
-                          //     return Object.assign({}, post, {
-                          //       likes: [newLike, ...post.likes]
-                          //     })
-                          //     console.log(post.likes.length)
-                          //   }
-                          // })
-                          for (let post in newFeed.feed) {
-                            if (post._id === newLike._blogPost._id) {
-                              console.log('RÄTT POST')
-                              Object.assign({}, post, {
-                                likes: [newLike, ...post.likes],
-                                ...post
-                              })
-                            }
+                        if (!subscriptionData.data) return prev
+
+                        const newLike = subscriptionData.data.newLike
+                        let newFeed = []
+
+                        for (let post of prev.feed) {
+                          if (post._id === newLike._blogPost._id) {
+                            const updatedPost = Object.assign({}, post, {
+                              ...post,
+                              likes: [{ _id: newLike._id, __typename: 'Like' }, ...post.likes]
+                            })
+
+                            newFeed.push({ ...updatedPost })
+                          } else {
+                            newFeed.push({ ...post })
                           }
-
-                          console.log(newFeed.feed[0].likes.length)
-
-                          console.log({ newFeed })
-                          return newFeed
                         }
-                      })
-                    }
-                  />
-                ))}
+
+                        return Object.assign({}, prev, { feed: newFeed })
+                      }
+                    })
+                  }
+                />
                 <Pagination>
                   {!!skip && (
                     <EmojiButton onClick={() => paginateBack()}>👈</EmojiButton>
