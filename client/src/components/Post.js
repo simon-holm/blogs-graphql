@@ -27,8 +27,15 @@ class Post extends React.Component {
         <FlexRow>
           <Mutation
             mutation={LIKE_BLOG}
+            optimisticResponse={{
+              __typename: 'Mutation',
+              likeBlog: {
+                __typename: 'Like',
+                _id
+              }
+            }}
             update={(cache, { data: { likeBlog } }) => {
-              const { feed } = cache.readQuery({
+              const data = cache.readQuery({
                 query: FEED_QUERY,
                 variables: {
                   skip: feedVariables.skip,
@@ -37,22 +44,16 @@ class Post extends React.Component {
                 }
               })
 
-              // -
-              console.log('update in Post mutation', { likeBlog })
-              // wtf
-              let currentPost = feed.filter(post => post._id === likeBlog._id)[0] //._id
-              currentPost.likes.push({ ...likeBlog })
+              const { feed } = data
+
+              let currentPost = feed.filter(post => post._id === _id)[0]
+
+              if (likeBlog._id === _id) currentPost.likes.push({ ...likeBlog })
 
               cache.writeQuery({
                 query: FEED_QUERY,
-                data: { feed }
+                data: { ...data, feed }
               })
-            }}
-            optimisticResponse={{
-              likeBlog: {
-                __typename: 'Mutation',
-                _id
-              }
             }}
           >
             {(likeBlog, { data, error, loading }) => (

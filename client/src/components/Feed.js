@@ -66,26 +66,27 @@ class Feed extends Component {
                     subscribeToMore({
                       document: LIKES_SUBSCRIPTION,
                       updateQuery: (prev, { subscriptionData }) => {
-
-                        if (!subscriptionData.data) return prev
+                        if (!subscriptionData.data) return null
 
                         const newLike = subscriptionData.data.newLike
+
                         let newFeed = []
 
                         for (let post of prev.feed) {
                           if (post._id === newLike._blogPost._id) {
-                            const updatedPost = Object.assign({}, post, {
+                            newFeed.push({
                               ...post,
-                              likes: [{ _id: newLike._id, __typename: 'Like' }, ...post.likes]
+                              likes: [
+                                { _id: newLike._id, __typename: 'Like' },
+                                ...post.likes
+                              ]
                             })
-
-                            newFeed.push({ ...updatedPost })
                           } else {
                             newFeed.push({ ...post })
                           }
                         }
 
-                        return Object.assign({}, prev, { feed: newFeed })
+                        return { ...prev, feed: newFeed }
                       }
                     })
                   }

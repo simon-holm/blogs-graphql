@@ -5,13 +5,19 @@ import registerServiceWorker from './registerServiceWorker'
 
 import { AUTH_TOKEN } from './constants'
 
-import { ApolloLink, split } from 'apollo-client-preset'
+import {
+  ApolloClient,
+  ApolloLink,
+  split,
+  InMemoryCache,
+  HttpLink
+} from 'apollo-boost'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import { ApolloProvider } from 'react-apollo'
-import { ApolloClient } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+// import {  } from 'apollo-client'
+// import {  } from 'apollo-link-http'
+// import {  } from 'apollo-cache-inmemory'
 
 import styledNormalize from 'styled-normalize'
 import { injectGlobal } from 'styled-components'
