@@ -21,7 +21,7 @@ type Like {
 type Comment {
   _id: ID!
   content: String!
-  createdAt: Int
+  createdAt: Float
   _user: User!
   _blogPost: Blog!
 }
@@ -31,7 +31,7 @@ type Blog {
   title: String
   content: String
   imageUrl: String
-  createdAt: Int
+  createdAt: Float
   likes: [Like!]!
   comments: [Comment!]!
   _user: User!

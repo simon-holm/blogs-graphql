@@ -19,6 +19,14 @@ export const FEED_QUERY = gql`
       likes {
         _id
       }
+      comments {
+        _id
+        createdAt
+        content
+        _user {
+          displayName
+        }
+      }
       _user {
         displayName
         firstname
@@ -33,6 +41,22 @@ const LIKES_SUBSCRIPTION = gql`
       _id
       _user {
         _id
+      }
+      _blogPost {
+        _id
+      }
+    }
+  }
+`
+
+const COMMENTS_SUBSCRIPTION = gql`
+  subscription newComment {
+    newComment {
+      _id
+      createdAt
+      content
+      _user {
+        displayName
       }
       _blogPost {
         _id
@@ -84,6 +108,46 @@ class Feed extends Component {
                               likes: [
                                 { _id: newLike._id, __typename: 'Like' },
                                 ...post.likes
+                              ]
+                            })
+                          } else {
+                            newFeed.push({ ...post })
+                          }
+                        }
+
+                        return { ...prev, feed: newFeed }
+                      }
+                    })
+                  }
+                  subscribeToNewComments={() =>
+                    subscribeToMore({
+                      document: COMMENTS_SUBSCRIPTION,
+                      updateQuery: (prev, { subscriptionData }) => {
+                        // TODO! TRY IF THIS WORKS! (just a straight copy of subscribe for likes)
+                        if (!subscriptionData.data) return prev
+
+                        const newComment = subscriptionData.data.newComment
+
+                        // check if the newComment already exists and return early if so
+                        const isDuplicateComment = prev.feed
+                          .filter(
+                            post => post._id === newComment._blogPost._id
+                          )[0]
+                          .comments.some(
+                            comment => newComment._id === comment._id
+                          )
+
+                        if (isDuplicateComment) return prev
+
+                        let newFeed = []
+                        // TODO 💀 uugh ineffective! how to do better?
+                        for (let post of prev.feed) {
+                          if (post._id === newComment._blogPost._id) {
+                            newFeed.push({
+                              ...post,
+                              comments: [
+                                { _id: newComment._id, __typename: 'Comment' },
+                                ...post.comments
                               ]
                             })
                           } else {

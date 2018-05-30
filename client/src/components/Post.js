@@ -19,11 +19,20 @@ const LIKE_BLOG = gql`
 
 class Post extends React.Component {
   render() {
-    const { _id, title, imageUrl, content, likes, feedVariables } = this.props
+    const {
+      _id,
+      title,
+      imageUrl,
+      content,
+      likes,
+      comments,
+      feedVariables
+    } = this.props
+
     return (
       <PostBody>
         <h2>{title}</h2>
-        <img src={imageUrl} />
+        <img src={imageUrl} alt={title} />
         <FlexRow>
           <Mutation
             mutation={LIKE_BLOG}
@@ -65,24 +74,44 @@ class Post extends React.Component {
           >
             {(likeBlog, { data, error, loading }) => (
               <EmojiButton onClick={() => likeBlog({ variables: { id: _id } })}>
-                {error ? '🛑' : loading ? '⏱' : '👍'}
+                {error ? '👌' : loading ? '🤜' : '👍'}
               </EmojiButton>
             )}
           </Mutation>
 
           {likes.length <= 10 ? (
-            likes.map(like => <Like key={like._id}>❤️</Like>)
+            likes.map(like => (
+              <Like key={like._id}>
+                <span role="img" aria-label="heart">
+                  ❤️
+                </span>
+              </Like>
+            ))
           ) : (
             <React.Fragment>
-              <Like>❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</Like>
+              <Like>
+                <span role="img" aria-label="hearts">
+                  ❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️
+                </span>
+              </Like>
               <LikeNumber>
-                <span>❌</span>
+                <span role="img" aria-label="cross">
+                  ❌
+                </span>
                 {likes.length - 10}
               </LikeNumber>
             </React.Fragment>
           )}
         </FlexRow>
         <pre>{content}</pre>
+        {comments.map(comment => (
+          <Comment key={comment._id}>
+            <span role="img" aria-label="pin">
+              📌
+            </span>
+            {`${comment._user.displayName}: ${comment.content}`}
+          </Comment>
+        ))}
       </PostBody>
     )
   }
@@ -132,6 +161,23 @@ const LikeNumber = styled.div`
   text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0px 0px 5px black;
   span {
     font-size: 2rem;
+  }
+`
+const Comment = styled.p`
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: white;
+  padding: 5px;
+  margin: 5px 0;
+  transition: transform 0.2s ease-in-out;
+  &:nth-child(even) {
+    transform: rotate(-1deg);
+  }
+  &:nth-child(odd) {
+    transform: rotate(1deg);
+  }
+  &:hover {
+    transform: rotate(0deg);
   }
 `
 export default withPagination(Post)
