@@ -44,15 +44,22 @@ class Post extends React.Component {
                 }
               })
 
-              const { feed } = data
+              const currentPost = data.feed.filter(post => post._id === _id)[0]
 
-              let currentPost = feed.filter(post => post._id === _id)[0]
+              /* if the like already exists we just return
+                (say if unlimited likes are allowed, spamming likes
+                can result in duplicates) */
+              const likeExists = currentPost.likes.some(
+                like => like._id === likeBlog._id
+              )
+              if (likeExists) return
 
-              if (likeBlog._id === _id) currentPost.likes.push({ ...likeBlog })
+              // just push it in! (make sure duplicates are also handled in subscription)
+              currentPost.likes.push({ ...likeBlog })
 
               cache.writeQuery({
                 query: FEED_QUERY,
-                data: { ...data, feed }
+                data: { ...data }
               })
             }}
           >

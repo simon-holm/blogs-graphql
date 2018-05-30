@@ -36,11 +36,11 @@ const likeBlog = async (parent, args, context, info) => {
   if (!blogPost) throw new Error('The blog does not exist and cannot be liked!')
 
   // add logic to stop like creation if like exists
-  const alreadyLiked = await Like.findOne({
-    _user: userId,
-    _blogPost: blogPost._id
-  })
-  if (alreadyLiked) throw new Error('User already liked this post')
+  // const alreadyLiked = await Like.findOne({
+  //   _user: userId,
+  //   _blogPost: blogPost._id
+  // })
+  // if (alreadyLiked) throw new Error('User already liked this post')
 
   const like = await new Like({
     _user: userId,

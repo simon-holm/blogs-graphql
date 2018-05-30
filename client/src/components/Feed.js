@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { EmojiButton } from './reusable'
 
 import FeedList from './FeedList'
-import Post from './Post'
 
 import withPagination from '../HOC/withPagination'
 
@@ -50,7 +49,6 @@ class Feed extends Component {
       paginateForward
     } = this.props
 
-    console.log('feed rendered')
     return (
       <React.Fragment>
         <Query query={FEED_QUERY} variables={{ skip, limit, searchTerm }}>
@@ -66,12 +64,19 @@ class Feed extends Component {
                     subscribeToMore({
                       document: LIKES_SUBSCRIPTION,
                       updateQuery: (prev, { subscriptionData }) => {
-                        if (!subscriptionData.data) return null
+                        if (!subscriptionData.data) return prev
 
                         const newLike = subscriptionData.data.newLike
 
-                        let newFeed = []
+                        // check if the newLike already exists and return early if so
+                        const isDuplicateLike = prev.feed
+                          .filter(post => post._id === newLike._blogPost._id)[0]
+                          .likes.some(like => newLike._id === like._id)
 
+                        if (isDuplicateLike) return prev
+
+                        let newFeed = []
+                        // TODO 💀 uugh ineffective! how to do better?
                         for (let post of prev.feed) {
                           if (post._id === newLike._blogPost._id) {
                             newFeed.push({
