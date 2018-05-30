@@ -1,6 +1,7 @@
 const Blog = require('../../database/models/Blog')
 const User = require('../../database/models/User')
 const Like = require('../../database/models/Like')
+const Comment = require('../../database/models/Comment')
 
 const { pubSub } = require('../index')
 
@@ -21,7 +22,7 @@ const createBlog = async (
     content,
     imageUrl,
     createdAt: Date.now(),
-    _user: userId // ? id matching user._id is it enough?
+    _user: userId
   }).save()
 
   // Return blogpost
@@ -29,28 +30,55 @@ const createBlog = async (
 }
 
 const likeBlog = async (parent, args, context, info) => {
-  // authenticate
-  const userId = authenticate(context)
+  try {
+    // authenticate
+    const userId = authenticate(context)
 
-  const blogPost = await Blog.findById(args.id)
-  if (!blogPost) throw new Error('The blog does not exist and cannot be liked!')
+    const blogPost = await Blog.findById(args.id)
+    if (!blogPost)
+      throw new Error('The blog does not exist and cannot be liked!')
 
-  // add logic to stop like creation if like exists
-  // const alreadyLiked = await Like.findOne({
-  //   _user: userId,
-  //   _blogPost: blogPost._id
-  // })
-  // if (alreadyLiked) throw new Error('User already liked this post')
+    const alreadyLiked = await Like.findOne({
+      $and: [{ _user: userId }, { _blogPost: args.id }]
+    })
+    if (alreadyLiked) throw new Error('User already liked this post')
 
-  const like = await new Like({
-    _user: userId,
-    _blogPost: args.id
-  }).save()
+    const like = await new Like({
+      _user: userId,
+      _blogPost: args.id
+    }).save()
 
-  // notify for subscription
-  context.pubsub.publish('newLike', { newLike: like })
+    // notify for subscription
+    context.pubsub.publish('newLike', { newLike: like })
 
-  return like
+    return like
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
+const commentBlog = async (parent, args, context, info) => {
+  try {
+    const userId = authenticate(context)
+
+    const blogPost = await Blog.findById(args.id)
+    if (!blogPost)
+      throw new Error('The blog does not exist and cannot be commented on!')
+
+    const comment = await new Comment({
+      _user: userId,
+      _blogPost: args.id,
+      createdAt: Date.now(),
+      content: args.content
+    }).save()
+
+    // notify subscription
+    context.pubsub.publish('newComment', { newComment: comment })
+
+    return comment
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
 const updateBlog = async (
@@ -60,7 +88,6 @@ const updateBlog = async (
   info
 ) => {
   try {
-    // Auth needed
     const userId = authenticate(context)
 
     const blogPost = await Blog.findById({ _id: id })
@@ -93,5 +120,6 @@ const removeBlog = async (parent, args, context, info) => {
 module.exports = {
   createBlog,
   likeBlog,
-  updateBlog
+  updateBlog,
+  commentBlog
 }

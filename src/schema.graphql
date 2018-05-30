@@ -18,6 +18,14 @@ type Like {
   _blogPost: Blog!
 }
 
+type Comment {
+  _id: ID!
+  content: String!
+  createdAt: Int
+  _user: User!
+  _blogPost: Blog!
+}
+
 type Blog {
   _id: ID!
   title: String
@@ -25,6 +33,7 @@ type Blog {
   imageUrl: String
   createdAt: Int
   likes: [Like!]!
+  comments: [Comment!]!
   _user: User!
 }
 
@@ -44,10 +53,12 @@ type Mutation {
   login(email: String!, password: String!): AuthPayload!
   createBlog(title: String!, content: String!, imageUrl: String!): Blog!
   likeBlog(id: ID!): Like!
+  commentBlog(id: ID!, content: String!): Comment!
   updateBlog(id: ID!, title: String, content: String, imageUrl: String): Blog!
   removeBlog(blogId: ID!): Blog!
 }
 
 type Subscription {
   newLike: Like
+  newComment: Comment
 }

@@ -65,7 +65,7 @@ class Post extends React.Component {
           >
             {(likeBlog, { data, error, loading }) => (
               <EmojiButton onClick={() => likeBlog({ variables: { id: _id } })}>
-                👍
+                {error ? '🛑' : loading ? '⏱' : '👍'}
               </EmojiButton>
             )}
           </Mutation>

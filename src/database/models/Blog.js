@@ -9,11 +9,4 @@ const blogSchema = new Schema({
   _user: { type: Schema.Types.ObjectId, ref: 'User' }
 })
 
-// Statics maybe pointless in GraphQL?? wait and see
-blogSchema.statics.nbrOfLikes = function(id) {
-  const blogPost = mongoose.model('Blog')
-
-  return blogPost.findById(id).then(blog => blog.likes.length)
-}
-
 module.exports = mongoose.model('Blog', blogSchema)
