@@ -59,6 +59,7 @@ const Header = props => {
 
 const NavBar = styled.nav`
   position: fixed;
+  z-index: 999;
 
   box-sizing: border-box;
   display: flex;

@@ -1,23 +1,13 @@
 import React, { Component } from 'react'
-import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import styled from 'styled-components'
 
 import { EmojiButton } from './reusable'
-import { FEED_QUERY } from './Feed'
 
 import withPagination from '../HOC/withPagination'
 
-const CREATE_POST = gql`
-  mutation createBlog($title: String!, $content: String!, $imageUrl: String!) {
-    createBlog(title: $title, content: $content, imageUrl: $imageUrl) {
-      _id
-      title
-      content
-      imageUrl
-    }
-  }
-`
+import { FEED_QUERY } from '../graphql/queries'
+import { CREATE_POST } from '../graphql/mutations'
 
 class CreatePost extends Component {
   state = {
@@ -45,40 +35,16 @@ class CreatePost extends Component {
       <div>
         <Mutation
           mutation={CREATE_POST}
-          update={(cache, { data: { createBlog } }) => {
-            const { feed } = cache.readQuery({
+          refetchQueries={() => [
+            {
               query: FEED_QUERY,
               variables: {
                 skip: feedVariables.skip,
                 limit: feedVariables.limit,
                 searchTerm: feedVariables.searchTerm
               }
-            })
-
-            feed.unshift({
-              ...createBlog,
-              likes: [],
-              _user: {
-                __typename: 'Mutation',
-                displayName: '',
-                firstname: '',
-                surname: ''
-              }
-            })
-
-            cache.writeQuery({
-              query: FEED_QUERY,
-              data: { feed }
-            })
-          }}
-          optimisticResponse={{
-            createBlog: {
-              __typename: 'Mutation',
-              title: this.state.title,
-              content: this.state.content,
-              imageUrl: this.state.imageUrl
             }
-          }}
+          ]}
         >
           {(createBlog, { data, loading, error }) => (
             <Form onSubmit={e => this.handleSubmit(e, createBlog)}>

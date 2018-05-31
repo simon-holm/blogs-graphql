@@ -1,69 +1,17 @@
 import React, { Component } from 'react'
 import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 import styled from 'styled-components'
 
 import { EmojiButton } from './reusable'
-
 import FeedList from './FeedList'
 
 import withPagination from '../HOC/withPagination'
 
-export const FEED_QUERY = gql`
-  query feed($skip: Int, $limit: Int, $searchTerm: String) {
-    feed(skip: $skip, limit: $limit, searchTerm: $searchTerm) {
-      _id
-      title
-      content
-      imageUrl
-      likes {
-        _id
-      }
-      comments {
-        _id
-        createdAt
-        content
-        _user {
-          displayName
-        }
-      }
-      _user {
-        displayName
-        firstname
-        surname
-      }
-    }
-  }
-`
-const LIKES_SUBSCRIPTION = gql`
-  subscription newLike {
-    newLike {
-      _id
-      _user {
-        _id
-      }
-      _blogPost {
-        _id
-      }
-    }
-  }
-`
-
-const COMMENTS_SUBSCRIPTION = gql`
-  subscription newComment {
-    newComment {
-      _id
-      createdAt
-      content
-      _user {
-        displayName
-      }
-      _blogPost {
-        _id
-      }
-    }
-  }
-`
+import {
+  LIKES_SUBSCRIPTION,
+  COMMENTS_SUBSCRIPTION
+} from '../graphql/subscriptions'
+import { FEED_QUERY } from '../graphql/queries'
 
 class Feed extends Component {
   render() {
