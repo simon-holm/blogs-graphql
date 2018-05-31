@@ -9,11 +9,29 @@ const Header = props => {
   const authToken = localStorage.getItem(AUTH_TOKEN)
   return (
     <NavBar>
-      <Title>🍌</Title>
+      <Title>
+        <span role="img" aria-label="brand-name">
+          🍌
+        </span>
+      </Title>
       <MenuOptions>
-        <Link to="/">📰</Link>
-        <Link to="/">👁‍🗨</Link>
-        {authToken && <Link to="/create">⚗️</Link>}
+        <Link to="/">
+          <span role="img" aria-label="posts link">
+            📰
+          </span>
+        </Link>
+        <Link to="/">
+          <span role="img" aria-label="search link">
+            👁‍🗨
+          </span>
+        </Link>
+        {authToken && (
+          <Link to="/create">
+            <span role="img" aria-label="create link">
+              ⚗️
+            </span>
+          </Link>
+        )}
       </MenuOptions>
       <MenuOptions>
         {authToken ? (
@@ -23,10 +41,16 @@ const Header = props => {
               props.history.push('/')
             }}
           >
-            🔌
+            <span role="img" aria-label="logout button">
+              🔌
+            </span>
           </a>
         ) : (
-          <Link to="/login">😉</Link>
+          <Link to="/login">
+            <span role="img" aria-label="login button">
+              😉
+            </span>
+          </Link>
         )}
       </MenuOptions>
     </NavBar>

@@ -123,7 +123,7 @@ class Feed extends Component {
                     subscribeToMore({
                       document: COMMENTS_SUBSCRIPTION,
                       updateQuery: (prev, { subscriptionData }) => {
-                        // TODO! TRY IF THIS WORKS! (just a straight copy of subscribe for likes)
+                        // TODO! refactor? (just a straight copy of subscribe for likes)
                         if (!subscriptionData.data) return prev
 
                         const newComment = subscriptionData.data.newComment
@@ -162,7 +162,11 @@ class Feed extends Component {
                 />
                 <Pagination>
                   {!!skip && (
-                    <EmojiButton onClick={() => paginateBack()}>👈</EmojiButton>
+                    <EmojiButton onClick={() => paginateBack()}>
+                      <span role="img" aria-label="paginate-back">
+                        👈
+                      </span>
+                    </EmojiButton>
                   )}
 
                   {data.feed.length === 5 && (
@@ -170,7 +174,9 @@ class Feed extends Component {
                       style={{ marginLeft: 'auto' }}
                       onClick={() => paginateForward()}
                     >
-                      👉
+                      <span role="img" aria-label="paginate-forward">
+                        👉
+                      </span>
                     </EmojiButton>
                   )}
                 </Pagination>

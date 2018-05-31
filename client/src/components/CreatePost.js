@@ -38,7 +38,7 @@ class CreatePost extends Component {
     this.props.history.push('/')
   }
 
-  // TODO - Add Update and optimisticUI to mutation
+  // TODO - Add Update and optimisticUI to mutation?
   render() {
     const { feedVariables } = this.props
     return (
@@ -101,7 +101,11 @@ class CreatePost extends Component {
                 value={this.state.content}
                 onChange={this.handleChange}
               />
-              <EmojiButton type="submit">📬</EmojiButton>
+              <EmojiButton type="submit">
+                <span role="img" aria-label="submit button">
+                  📬
+                </span>
+              </EmojiButton>
             </Form>
           )}
         </Mutation>
