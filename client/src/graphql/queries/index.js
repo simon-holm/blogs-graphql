@@ -15,10 +15,12 @@ export const FEED_QUERY = gql`
         createdAt
         content
         _user {
+          _id
           displayName
         }
       }
       _user {
+        _id
         displayName
         firstname
         surname

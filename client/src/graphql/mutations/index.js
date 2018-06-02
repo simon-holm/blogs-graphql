@@ -17,3 +17,19 @@ export const LIKE_BLOG = gql`
     }
   }
 `
+export const COMMENT_BLOG = gql`
+  mutation commentBlog($id: ID!, $content: String!) {
+    commentBlog(id: $id, content: $content) {
+      _id
+      content
+      createdAt
+      _user {
+        _id
+        displayName
+      }
+      _blogPost {
+        _id
+      }
+    }
+  }
+`

@@ -20,6 +20,7 @@ export const COMMENTS_SUBSCRIPTION = gql`
       createdAt
       content
       _user {
+        _id
         displayName
       }
       _blogPost {

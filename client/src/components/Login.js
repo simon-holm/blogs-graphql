@@ -26,7 +26,11 @@ class Login extends Component {
           password
         }
       })
-      const { token } = result.data.login
+      const { token, user } = result.data.login
+      console.log(user)
+
+      // TODO - persist entire user not just token
+
       this._saveUserData(token)
     } else {
       const result = await this.props.signupMutation({
@@ -134,6 +138,10 @@ const SIGNUP_MUTATION = gql`
       surname: $surname
     ) {
       token
+      user {
+        _id
+        displayName
+      }
     }
   }
 `
@@ -142,6 +150,10 @@ const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      user {
+        _id
+        displayName
+      }
     }
   }
 `

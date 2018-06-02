@@ -58,12 +58,8 @@ const injectNormalizeCSS = () => injectGlobal`
     -webkit-box-shadow: 0 0 0 50px #efefef inset;
   }
   textarea {
-    text-align: center;
+    text-align: left;
     font-size: 2rem;
-
-    &:focus {
-      text-align: left;
-    }
   }
 `
 

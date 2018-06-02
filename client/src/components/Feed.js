@@ -48,7 +48,7 @@ class Feed extends Component {
                         if (isDuplicateLike) return prev
 
                         let newFeed = []
-                        // TODO 💀 uugh ineffective! how to do better?
+                        // TODO 💀 ineffective? how to do better?
                         for (let post of prev.feed) {
                           if (post._id === newLike._blogPost._id) {
                             newFeed.push({
@@ -75,6 +75,7 @@ class Feed extends Component {
                         if (!subscriptionData.data) return prev
 
                         const newComment = subscriptionData.data.newComment
+                        console.log(newComment)
 
                         // check if the newComment already exists and return early if so
                         const isDuplicateComment = prev.feed
@@ -88,14 +89,14 @@ class Feed extends Component {
                         if (isDuplicateComment) return prev
 
                         let newFeed = []
-                        // TODO 💀 uugh ineffective! how to do better?
+                        // TODO 💀 ineffective? how to do better?
                         for (let post of prev.feed) {
                           if (post._id === newComment._blogPost._id) {
                             newFeed.push({
                               ...post,
                               comments: [
-                                { _id: newComment._id, __typename: 'Comment' },
-                                ...post.comments
+                                ...post.comments,
+                                { __typename: 'Comment', ...newComment }
                               ]
                             })
                           } else {

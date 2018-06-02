@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import Likes from './Likes'
 import LikeButton from './LikeButton'
+import CommentForm from './CommentForm'
 
 const Post = ({ _id, title, imageUrl, content, likes, comments }) => (
   <PostBody>
@@ -21,6 +22,7 @@ const Post = ({ _id, title, imageUrl, content, likes, comments }) => (
         {`${comment._user.displayName}: ${comment.content}`}
       </Comment>
     ))}
+    <CommentForm _id={_id} />
   </PostBody>
 )
 
