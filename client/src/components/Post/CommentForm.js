@@ -8,6 +8,7 @@ import { COMMENT_BLOG } from '../../graphql/mutations'
 import { FEED_QUERY } from '../../graphql/queries'
 
 import withPagination from '../../HOC/withPagination'
+import withUser from '../../HOC/withUser'
 
 class CommentForm extends Component {
   state = { content: '' }
@@ -28,7 +29,8 @@ class CommentForm extends Component {
   render() {
     const {
       _id,
-      feedVariables: { skip, limit, searchTerm }
+      feedVariables: { skip, limit, searchTerm },
+      user
     } = this.props
     return (
       <Mutation
@@ -42,8 +44,8 @@ class CommentForm extends Component {
             createdAt: Date.now(),
             _user: {
               __typename: 'User',
-              _id: 'fake',
-              displayName: 'BAJS'
+              _id: user._id,
+              displayName: user.displayName
             },
             _blogPost: {
               __typename: 'Blog',
@@ -60,8 +62,6 @@ class CommentForm extends Component {
               searchTerm
             }
           })
-          console.log(commentBlog)
-          if (!commentBlog._id) console.log('comment has no id', commentBlog)
           const currentPost = data.feed.filter(post => post._id === _id)[0]
 
           // if the comment already exists we just return
@@ -111,4 +111,4 @@ const Input = styled.input`
   padding: 0.1rem;
 `
 
-export default withPagination(CommentForm)
+export default withPagination(withUser(CommentForm))

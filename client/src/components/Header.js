@@ -3,7 +3,7 @@ import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { AUTH_TOKEN } from '../constants'
+import { AUTH_TOKEN, AUTH_USER } from '../constants'
 
 const Header = props => {
   const authToken = localStorage.getItem(AUTH_TOKEN)
@@ -38,6 +38,7 @@ const Header = props => {
           <a
             onClick={() => {
               localStorage.removeItem(AUTH_TOKEN)
+              localStorage.removeItem(AUTH_USER)
               props.history.push('/')
             }}
           >

@@ -5,7 +5,7 @@ import Likes from './Likes'
 import LikeButton from './LikeButton'
 import CommentForm from './CommentForm'
 
-const Post = ({ _id, title, imageUrl, content, likes, comments }) => (
+const Post = ({ _id, title, imageUrl, content, likes, comments, user }) => (
   <PostBody>
     <h2>{title}</h2>
     <img src={imageUrl} alt={title} />
@@ -14,15 +14,17 @@ const Post = ({ _id, title, imageUrl, content, likes, comments }) => (
       <Likes likes={likes} />
     </FlexRow>
     <pre>{content}</pre>
-    {comments.map(comment => (
-      <Comment key={comment._id}>
-        <span role="img" aria-label="pin">
-          📌
-        </span>
-        {`${comment._user.displayName}: ${comment.content}`}
-      </Comment>
-    ))}
-    <CommentForm _id={_id} />
+    <CommentGroup>
+      {comments.map(comment => (
+        <Comment key={comment._id}>
+          <span role="img" aria-label="pin">
+            📌
+          </span>
+          {`${comment._user.displayName}: ${comment.content}`}
+        </Comment>
+      ))}
+    </CommentGroup>
+    {!!user && <CommentForm _id={_id} />}
   </PostBody>
 )
 
@@ -58,7 +60,13 @@ const FlexRow = styled.div`
   max-width: 60rem;
   height: 7.5rem;
 `
-
+const CommentGroup = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+`
 const Comment = styled.p`
   font-size: 1.5rem;
   font-weight: bold;

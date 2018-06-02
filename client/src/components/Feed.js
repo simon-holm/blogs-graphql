@@ -75,7 +75,6 @@ class Feed extends Component {
                         if (!subscriptionData.data) return prev
 
                         const newComment = subscriptionData.data.newComment
-                        console.log(newComment)
 
                         // check if the newComment already exists and return early if so
                         const isDuplicateComment = prev.feed

@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { Button } from './reusable'
 
-import { AUTH_TOKEN } from '../constants'
+import { AUTH_USER, AUTH_TOKEN } from '../constants'
 
 class Login extends Component {
   state = {
@@ -27,11 +27,10 @@ class Login extends Component {
         }
       })
       const { token, user } = result.data.login
-      console.log(user)
 
       // TODO - persist entire user not just token
 
-      this._saveUserData(token)
+      this._saveUserData(token, user)
     } else {
       const result = await this.props.signupMutation({
         variables: {
@@ -40,13 +39,14 @@ class Login extends Component {
           password
         }
       })
-      const { token } = result.data.signup
-      this._saveUserData(token)
+      const { token, user } = result.data.signup
+      this._saveUserData(token, user)
     }
     this.props.history.push(`/`)
   }
 
-  _saveUserData = token => {
+  _saveUserData = (token, user) => {
+    localStorage.setItem(AUTH_USER, JSON.stringify(user))
     localStorage.setItem(AUTH_TOKEN, token)
   }
 
