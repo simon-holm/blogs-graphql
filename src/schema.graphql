@@ -37,8 +37,13 @@ type Blog {
   _user: User!
 }
 
+type FeedPayload {
+  count: Int!
+  blogs: [Blog!]!
+}
+
 type Query {
-  feed(skip: Int, limit: Int, searchTerm: String): [Blog!]!
+  feed(skip: Int, limit: Int, searchTerm: String): FeedPayload!
   oneBlog(id: ID!): Blog!
 }
 

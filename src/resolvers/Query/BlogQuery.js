@@ -19,7 +19,11 @@ const feed = async (parent, args, context, info) => {
     .limit(limit)
     .lean()
 
-  return blogs
+  const count = await Blog.find()
+    .count()
+    .lean()
+
+  return { blogs, count }
 }
 
 const oneBlog = async (parent, args, context, info) => {

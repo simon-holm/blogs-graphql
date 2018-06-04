@@ -18,7 +18,8 @@ class Feed extends Component {
     const {
       feedVariables: { skip, limit, searchTerm },
       paginateBack,
-      paginateForward
+      paginateForward,
+      paginateTo
     } = this.props
 
     return (
@@ -28,10 +29,14 @@ class Feed extends Component {
             if (loading) return 'Loading...'
             if (error) return `Error! ${error.message}`
 
+            const pagesCount = Array.from(
+              new Array(Math.ceil(data.feed.count / limit), (e, index) => index)
+            )
+
             return (
               <React.Fragment>
                 <FeedList
-                  feed={data.feed}
+                  blogs={data.feed.blogs}
                   subscribeToNewLikes={() =>
                     subscribeToMore({
                       document: LIKES_SUBSCRIPTION,
@@ -117,7 +122,13 @@ class Feed extends Component {
                     </EmojiButton>
                   )}
 
-                  {data.feed.length === 5 && (
+                  {pagesCount.map((p, index) => (
+                    <button onClick={() => paginateTo(index)}>
+                      {index + 1}
+                    </button>
+                  ))}
+
+                  {data.feed.blogs.length === 5 && (
                     <EmojiButton
                       style={{ marginLeft: 'auto' }}
                       onClick={() => paginateForward()}

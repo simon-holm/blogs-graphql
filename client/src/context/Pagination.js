@@ -11,7 +11,6 @@ class FeedProvider extends Component {
     }
   }
   paginateBack = () => {
-    console.log('GOING BACK')
     this.setState(prevState => ({
       feedVariables: {
         ...prevState.feedVariables,
@@ -21,11 +20,20 @@ class FeedProvider extends Component {
   }
 
   paginateForward = () => {
-    console.log('GOING FORWARD')
     this.setState(prevState => ({
       feedVariables: {
         ...prevState.feedVariables,
         skip: prevState.feedVariables.skip + 5
+      }
+    }))
+  }
+
+  paginateTo = pageNumber => {
+    const skip = pageNumber * this.state.feedVariables.limit
+    this.setState(prevState => ({
+      feedVariables: {
+        ...prevState.feedVariables,
+        skip
       }
     }))
   }
@@ -36,7 +44,8 @@ class FeedProvider extends Component {
         value={{
           ...this.state,
           paginateBack: this.paginateBack,
-          paginateForward: this.paginateForward
+          paginateForward: this.paginateForward,
+          paginateTo: this.paginateTo
         }}
       >
         {this.props.children}

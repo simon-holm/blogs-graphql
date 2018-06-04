@@ -13,6 +13,7 @@ export default function withPagination(WrappedComponent) {
               feedVariables={context.feedVariables}
               paginateBack={context.paginateBack}
               paginateForward={context.paginateForward}
+              paginateTo={context.paginateTo}
             />
           )}
         </FeedContext.Consumer>
