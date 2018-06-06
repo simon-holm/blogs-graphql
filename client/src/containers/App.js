@@ -14,18 +14,18 @@ import FeedProvider from '../context/Pagination'
 class App extends Component {
   render() {
     return (
-      <Wrapper>
-        <Header />
-        <AppContainer>
-          <FeedProvider>
+      <FeedProvider>
+        <Wrapper>
+          <Header />
+          <AppContainer>
             <Switch>
               <Route exact path="/" component={Feed} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/create" component={CreatePost} />
             </Switch>
-          </FeedProvider>
-        </AppContainer>
-      </Wrapper>
+          </AppContainer>
+        </Wrapper>
+      </FeedProvider>
     )
   }
 }

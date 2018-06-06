@@ -14,6 +14,7 @@ export default function withPagination(WrappedComponent) {
               paginateBack={context.paginateBack}
               paginateForward={context.paginateForward}
               paginateTo={context.paginateTo}
+              search={context.search}
             />
           )}
         </FeedContext.Consumer>

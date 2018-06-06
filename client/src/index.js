@@ -15,9 +15,6 @@ import {
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import { ApolloProvider } from 'react-apollo'
-// import {  } from 'apollo-client'
-// import {  } from 'apollo-link-http'
-// import {  } from 'apollo-cache-inmemory'
 
 import styledNormalize from 'styled-normalize'
 import { injectGlobal } from 'styled-components'

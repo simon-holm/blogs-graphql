@@ -10,11 +10,24 @@ class FeedProvider extends Component {
       searchTerm: ''
     }
   }
-  paginateBack = () => {
+
+  search = searchTerm => {
     this.setState(prevState => ({
       feedVariables: {
         ...prevState.feedVariables,
-        skip: prevState.feedVariables.skip - 5
+        skip: 0,
+        searchTerm
+      }
+    }))
+  }
+
+  paginateBack = () => {
+    if (this.state.feedVariables.skip === 0) return
+
+    this.setState(prevState => ({
+      feedVariables: {
+        ...prevState.feedVariables,
+        skip: prevState.feedVariables.skip - this.state.feedVariables.limit
       }
     }))
   }
@@ -23,7 +36,7 @@ class FeedProvider extends Component {
     this.setState(prevState => ({
       feedVariables: {
         ...prevState.feedVariables,
-        skip: prevState.feedVariables.skip + 5
+        skip: prevState.feedVariables.skip + this.state.feedVariables.limit
       }
     }))
   }
@@ -45,7 +58,8 @@ class FeedProvider extends Component {
           ...this.state,
           paginateBack: this.paginateBack,
           paginateForward: this.paginateForward,
-          paginateTo: this.paginateTo
+          paginateTo: this.paginateTo,
+          search: this.search
         }}
       >
         {this.props.children}

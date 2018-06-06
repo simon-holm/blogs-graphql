@@ -29,7 +29,7 @@ const LikeButton = ({ _id, feedVariables: { skip, limit, searchTerm } }) => {
           }
         })
 
-        const currentPost = data.feed.filter(post => post._id === _id)[0]
+        const currentPost = data.feed.blogs.filter(post => post._id === _id)[0]
 
         /* if the like already exists we just return
                 (say if unlimited likes are allowed, spamming likes

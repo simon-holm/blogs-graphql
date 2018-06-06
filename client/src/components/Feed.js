@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { Query } from 'react-apollo'
-import styled from 'styled-components'
-
-import { EmojiButton } from './reusable'
 import FeedList from './FeedList'
+import Pagination from './Pagination'
 
 import withPagination from '../HOC/withPagination'
 
@@ -16,10 +14,7 @@ import { FEED_QUERY } from '../graphql/queries'
 class Feed extends Component {
   render() {
     const {
-      feedVariables: { skip, limit, searchTerm },
-      paginateBack,
-      paginateForward,
-      paginateTo
+      feedVariables: { skip, limit, searchTerm }
     } = this.props
 
     return (
@@ -46,17 +41,17 @@ class Feed extends Component {
                         const newLike = subscriptionData.data.newLike
 
                         // check if the newLike already exists and return early if so
-                        const isDuplicateLike = prev.feed
+                        const isDuplicateLike = prev.feed.blogs
                           .filter(post => post._id === newLike._blogPost._id)[0]
                           .likes.some(like => newLike._id === like._id)
 
                         if (isDuplicateLike) return prev
 
-                        let newFeed = []
+                        let newBlogs = []
                         // TODO 💀 ineffective? how to do better?
                         for (let post of prev.feed) {
                           if (post._id === newLike._blogPost._id) {
-                            newFeed.push({
+                            newBlogs.push({
                               ...post,
                               likes: [
                                 { _id: newLike._id, __typename: 'Like' },
@@ -64,11 +59,14 @@ class Feed extends Component {
                               ]
                             })
                           } else {
-                            newFeed.push({ ...post })
+                            newBlogs.push({ ...post })
                           }
                         }
 
-                        return { ...prev, feed: newFeed }
+                        return {
+                          ...prev,
+                          feed: { ...prev.feed, blogs: newBlogs }
+                        }
                       }
                     })
                   }
@@ -82,7 +80,7 @@ class Feed extends Component {
                         const newComment = subscriptionData.data.newComment
 
                         // check if the newComment already exists and return early if so
-                        const isDuplicateComment = prev.feed
+                        const isDuplicateComment = prev.feed.blogs
                           .filter(
                             post => post._id === newComment._blogPost._id
                           )[0]
@@ -92,11 +90,11 @@ class Feed extends Component {
 
                         if (isDuplicateComment) return prev
 
-                        let newFeed = []
+                        let newBlogs = []
                         // TODO 💀 ineffective? how to do better?
-                        for (let post of prev.feed) {
+                        for (let post of prev.feed.blogs) {
                           if (post._id === newComment._blogPost._id) {
-                            newFeed.push({
+                            newBlogs.push({
                               ...post,
                               comments: [
                                 ...post.comments,
@@ -104,41 +102,19 @@ class Feed extends Component {
                               ]
                             })
                           } else {
-                            newFeed.push({ ...post })
+                            newBlogs.push({ ...post })
                           }
                         }
 
-                        return { ...prev, feed: newFeed }
+                        return {
+                          ...prev,
+                          feed: { ...prev.feed, blogs: newBlogs }
+                        }
                       }
                     })
                   }
                 />
-                <Pagination>
-                  {!!skip && (
-                    <EmojiButton onClick={() => paginateBack()}>
-                      <span role="img" aria-label="paginate-back">
-                        👈
-                      </span>
-                    </EmojiButton>
-                  )}
-
-                  {pagesCount.map((p, index) => (
-                    <button onClick={() => paginateTo(index)}>
-                      {index + 1}
-                    </button>
-                  ))}
-
-                  {data.feed.blogs.length === 5 && (
-                    <EmojiButton
-                      style={{ marginLeft: 'auto' }}
-                      onClick={() => paginateForward()}
-                    >
-                      <span role="img" aria-label="paginate-forward">
-                        👉
-                      </span>
-                    </EmojiButton>
-                  )}
-                </Pagination>
+                <Pagination pagesCount={pagesCount} />
               </React.Fragment>
             )
           }}
@@ -147,13 +123,5 @@ class Feed extends Component {
     )
   }
 }
-
-const Pagination = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  width: 50vw;
-  margin: 10rem 0;
-`
 
 export default withPagination(Feed)

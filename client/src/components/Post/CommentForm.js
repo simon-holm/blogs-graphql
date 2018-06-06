@@ -62,7 +62,9 @@ class CommentForm extends Component {
               searchTerm
             }
           })
-          const currentPost = data.feed.filter(post => post._id === _id)[0]
+          const currentPost = data.feed.blogs.filter(
+            post => post._id === _id
+          )[0]
 
           // if the comment already exists we just return
 
@@ -82,7 +84,7 @@ class CommentForm extends Component {
       >
         {(commentBlog, { data, error, loading }) => (
           <Form onSubmit={e => this.handleSubmit(e, commentBlog, _id)}>
-            <Input
+            <Textarea
               name="content"
               value={this.state.content}
               onChange={this.handleChange}
@@ -104,11 +106,15 @@ const Form = styled.form`
 
   margin-top: 2rem;
 `
-const Input = styled.input`
+const Textarea = styled.textarea`
   border-radius: 1.5rem;
   background-color: rgba(255, 255, 255, 0.5);
 
   padding: 0.1rem;
+
+  &:focus {
+    outline: none;
+  }
 `
 
 export default withPagination(withUser(CommentForm))
