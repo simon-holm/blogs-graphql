@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter as Router } from 'react-router-dom'
 import registerServiceWorker from './registerServiceWorker'
 
 import { AUTH_TOKEN } from './constants'
@@ -61,7 +61,7 @@ const injectNormalizeCSS = () => injectGlobal`
 `
 
 // Apollo Client
-const httpLink = new HttpLink({ uri: 'http://localhost:4000' })
+const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql/' })
 
 const middlewareAuthLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem(AUTH_TOKEN)
@@ -77,7 +77,7 @@ const middlewareAuthLink = new ApolloLink((operation, forward) => {
 const httpLinkWithAuthToken = middlewareAuthLink.concat(httpLink)
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000`,
+  uri: `ws://localhost:4000/subscriptions`,
   options: {
     reconnect: true,
     connectionParams: {
@@ -104,11 +104,11 @@ const renderApp = () => {
   injectNormalizeCSS()
 
   ReactDOM.render(
-    <BrowserRouter>
+    <Router>
       <ApolloProvider client={client}>
         <App />
       </ApolloProvider>
-    </BrowserRouter>,
+    </Router>,
     document.getElementById('root')
   )
   registerServiceWorker()

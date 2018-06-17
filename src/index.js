@@ -18,4 +18,16 @@ const server = new GraphQLServer({
   resolvers,
   context: req => ({ ...req, pubsub: new PubSub() })
 })
-server.start(() => console.log('Server is running on localhost:4000'))
+
+const options = {
+  port: 4000,
+  endpoint: '/graphql',
+  subscriptions: '/subscriptions',
+  playground: '/playground'
+}
+
+server.express.get('/', (req, res) => res.send('<h1>HEJ</h1>'))
+
+server.start(options, ({ port }) =>
+  console.log(`Server is running on port:${port}`)
+)

@@ -1,32 +1,55 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
+
+import { EmojiButton } from '../reusable'
 
 import Likes from './Likes'
 import LikeButton from './LikeButton'
 import CommentForm from './CommentForm'
+import EditPost from '../EditPost'
 
-const Post = ({ _id, title, imageUrl, content, likes, comments, user }) => (
-  <PostBody>
-    <h2>{title}</h2>
-    <img src={imageUrl} alt={title} />
-    <FlexRow>
-      <LikeButton _id={_id} />
-      <Likes likes={likes} />
-    </FlexRow>
-    <pre>{content}</pre>
-    <CommentGroup>
-      {comments.map(comment => (
-        <Comment key={comment._id}>
-          <span role="img" aria-label="pin">
-            📌
-          </span>
-          {`${comment._user.displayName}: ${comment.content}`}
-        </Comment>
-      ))}
-    </CommentGroup>
-    {!!user && <CommentForm _id={_id} />}
-  </PostBody>
-)
+class Post extends Component {
+  state = { showEdit: false }
+
+  toggleEdit = () =>
+    this.setState(prevState => ({ showEdit: !prevState.showEdit }))
+
+  render() {
+    const {
+      post: { _id, _user, title, imageUrl, content, likes, comments },
+      user
+    } = this.props
+    return (
+      <PostBody>
+        <h2>{title}</h2>
+        {!!user &&
+          _user._id === user._id && (
+            <EmojiButton onClick={this.toggleEdit}>✏️</EmojiButton>
+          )}
+        <img src={imageUrl} alt={title} />
+        <FlexRow>
+          <LikeButton _id={_id} />
+          <Likes likes={likes} />
+        </FlexRow>
+        <pre>{content}</pre>
+        <CommentGroup>
+          {comments.map(comment => (
+            <Comment key={comment._id}>
+              <span role="img" aria-label="pin">
+                📌
+              </span>
+              {`${comment._user.displayName}: ${comment.content}`}
+            </Comment>
+          ))}
+        </CommentGroup>
+        {!!user && <CommentForm _id={_id} />}
+        {this.state.showEdit && (
+          <EditPost post={this.props.post} toggleEdit={this.toggleEdit} />
+        )}
+      </PostBody>
+    )
+  }
+}
 
 const PostBody = styled.article`
   display: flex;

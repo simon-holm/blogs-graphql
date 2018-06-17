@@ -12,7 +12,7 @@ class FeedList extends Component {
 
   render() {
     return this.props.blogs.map(post => (
-      <Post key={post._id} {...post} user={this.props.user} />
+      <Post key={post._id} post={post} user={this.props.user} />
     ))
   }
 }

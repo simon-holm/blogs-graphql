@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
-import styled from 'styled-components'
 
 import { EmojiButton } from './reusable'
 
@@ -8,6 +7,8 @@ import withPagination from '../HOC/withPagination'
 
 import { FEED_QUERY } from '../graphql/queries'
 import { CREATE_POST } from '../graphql/mutations'
+
+import { Form } from './reusable'
 
 class CreatePost extends Component {
   state = {
@@ -79,19 +80,5 @@ class CreatePost extends Component {
     )
   }
 }
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-
-  min-width: 50vw;
-
-  input {
-    margin-bottom: 1rem;
-  }
-  button {
-    margin-top: 1rem;
-  }
-`
 
 export default withPagination(CreatePost)
