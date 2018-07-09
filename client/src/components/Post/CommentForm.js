@@ -1,14 +1,31 @@
 import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
 import styled from 'styled-components'
+import gql from 'graphql-tag'
 
 import { EmojiButton } from '../reusable'
 
-import { COMMENT_BLOG } from '../../graphql/mutations'
 import { FEED_QUERY } from '../../graphql/queries'
 
 import withPagination from '../../HOC/withPagination'
 import withUser from '../../HOC/withUser'
+
+const COMMENT_BLOG = gql`
+  mutation commentBlog($id: ID!, $content: String!) {
+    commentBlog(id: $id, content: $content) {
+      _id
+      content
+      createdAt
+      _user {
+        _id
+        displayName
+      }
+      _blogPost {
+        _id
+      }
+    }
+  }
+`
 
 class CommentForm extends Component {
   state = { content: '' }

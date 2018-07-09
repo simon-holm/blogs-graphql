@@ -1,12 +1,20 @@
 import React from 'react'
 import { Mutation } from 'react-apollo'
+import gql from 'graphql-tag'
 
 import { EmojiButton } from '../reusable'
 
-import { LIKE_BLOG } from '../../graphql/mutations'
 import { FEED_QUERY } from '../../graphql/queries'
 
 import withPagination from '../../HOC/withPagination'
+
+const LIKE_BLOG = gql`
+  mutation likeBlog($id: ID!) {
+    likeBlog(id: $id) {
+      _id
+    }
+  }
+`
 
 const LikeButton = ({ _id, feedVariables: { skip, limit, searchTerm } }) => {
   return (

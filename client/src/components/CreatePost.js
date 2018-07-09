@@ -1,14 +1,25 @@
 import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
+import gql from 'graphql-tag'
 
 import { EmojiButton } from './reusable'
 
 import withPagination from '../HOC/withPagination'
 
 import { FEED_QUERY } from '../graphql/queries'
-import { CREATE_POST } from '../graphql/mutations'
 
 import { Form } from './reusable'
+
+const CREATE_POST = gql`
+  mutation createBlog($title: String!, $content: String!, $imageUrl: String!) {
+    createBlog(title: $title, content: $content, imageUrl: $imageUrl) {
+      _id
+      title
+      content
+      imageUrl
+    }
+  }
+`
 
 class CreatePost extends Component {
   state = {
