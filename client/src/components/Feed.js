@@ -20,7 +20,7 @@ class Feed extends Component {
     return (
       <React.Fragment>
         <Query query={FEED_QUERY} variables={{ skip, limit, searchTerm }}>
-          {({ subscribeToMore, loading, error, data, refetch }) => {
+          {({ subscribeToMore, loading, error, data }) => {
             if (loading) return 'Loading...'
             if (error) return `Error! ${error.message}`
 
@@ -48,7 +48,6 @@ class Feed extends Component {
                         if (isDuplicateLike) return prev
 
                         let newBlogs = []
-                        // TODO 💀 ineffective? how to do better?
                         for (let post of prev.feed) {
                           if (post._id === newLike._blogPost._id) {
                             newBlogs.push({
@@ -91,7 +90,6 @@ class Feed extends Component {
                         if (isDuplicateComment) return prev
 
                         let newBlogs = []
-                        // TODO 💀 ineffective? how to do better?
                         for (let post of prev.feed.blogs) {
                           if (post._id === newComment._blogPost._id) {
                             newBlogs.push({
