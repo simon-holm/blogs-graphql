@@ -1,1 +1,1 @@
-# blog-graphql-server
+# GraphQL React Blog
